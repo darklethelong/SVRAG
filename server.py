@@ -27,30 +27,27 @@ sending_queue = mp.Queue()
 
 class SavingAudios:
     
-    def __init__(self, data, name_file_micro, name_file_speaker, channel_speaker = 2, channel_micro = 1, samplerate_speaker = 44100, samplerate_micro = 16000):
+    def __init__(self, channel_speaker = 2, channel_micro = 1, samplerate_speaker = 44100, samplerate_micro = 16000):
         self.paudio = pyaudiop.PyAudio()
-        self.data = data
-        self.name_file_micro = name_file_micro
-        self.name_file_speaker = name_file_speaker
         self.channel_speaker = channel_speaker
         self.channel_micro = channel_micro
         self.samplerate_speaker = samplerate_speaker
         self.samplerate_micro = samplerate_micro
 
-    def save_audio_micro(self):        
-        wf = wave.open(self.name_file_micro, 'wb')
+    def save_audio_micro(self, data, name_file_micro):        
+        wf = wave.open(name_file_micro, 'wb')
         wf.setnchannels(self.channel_micro)
         wf.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
         wf.setframerate(self.samplerate_micro)
-        wf.writeframes(self.data)
+        wf.writeframes(data)
         wf.close()
 
-    def save_audio_speaker(self):
-        wf = wave.open(self.name_file_speaker, 'wb')
+    def save_audio_speaker(self, data, name_file_speaker):
+        wf = wave.open(name_file_speaker, 'wb')
         wf.setnchannels(self.channel_speaker)
         wf.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
         wf.setframerate(self.samplerate_speaker)
-        wf.writeframes(self.data)
+        wf.writeframes(data)
         wf.close()
 
 class TranscriberThread(threading.Thread):
@@ -102,7 +99,7 @@ class SearchingThread(threading.Thread):
     
     def run(self):
         count_check = 0
-        print("Start Searching Service")
+        print("Start Analyzing service")
         while self.running_flag.is_set():
             try:
                 text_transcription = searching_queue.get()

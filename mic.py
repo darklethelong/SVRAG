@@ -13,7 +13,7 @@ async def microphone_client():
             try:
                 with mic as source:
                     r.adjust_for_ambient_noise(source)
-                    audio = r.record(source,  duration=6)
+                    audio = r.record(source,  duration=3)
                     data = b'MICROPHONE:' + audio.get_wav_data()
                     await websocket.send(data)
                     server_response = await websocket.recv()
